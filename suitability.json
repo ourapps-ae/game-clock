@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "jobs": [
+    "game-clock"
+  ],
+  "profiles": [
+    {
+      "id": "any",
+      "load": {},
+      "cost": "none",
+      "regions": [
+        "any"
+      ],
+      "compliance": []
+    }
+  ],
+  "notes": "Pure library; no provider limits apply. The host's alarm facility (for example a durable object alarm) is chosen by the server-host job, not here."
+}

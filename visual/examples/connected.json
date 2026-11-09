@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "game-clock-connected",
+  "title": "Game clock: connected consumer",
+  "status": "example",
+  "view": "component",
+  "focus": "component",
+  "definitions": [
+    {
+      "id": "ourapps-ae.game-clock",
+      "name": "Game clock",
+      "kind": "component",
+      "status": "example",
+      "package": "ourapps-ae/game-clock",
+      "version": "0.3.0",
+      "ports": [
+        {
+          "id": "game-clock",
+          "name": "Game clock",
+          "direction": "output",
+          "kind": "interface",
+          "type": "ae/game-clock",
+          "version": "1.0.0"
+        }
+      ],
+      "settings": [
+        {
+          "id": "decisionSeconds",
+          "name": "Decisionseconds",
+          "type": "number",
+          "required": false,
+          "secret": false,
+          "default": 30
+        },
+        {
+          "id": "onTimeout",
+          "name": "Ontimeout",
+          "type": "string",
+          "required": false,
+          "secret": false,
+          "default": "check-or-fold"
+        }
+      ]
+    },
+    {
+      "id": "consumer",
+      "name": "Example application consumer",
+      "kind": "application",
+      "status": "example",
+      "revision": "0.1.0",
+      "ports": [
+        {
+          "id": "game-clock",
+          "name": "Game clock",
+          "direction": "input",
+          "kind": "interface",
+          "type": "ae/game-clock",
+          "version": "1.0.0",
+          "required": true,
+          "cardinality": "one"
+        }
+      ],
+      "settings": []
+    }
+  ],
+  "instances": [
+    {
+      "id": "component",
+      "name": "Game clock",
+      "definition": "ourapps-ae.game-clock",
+      "configuration": {}
+    },
+    {
+      "id": "consumer",
+      "name": "Example consumer",
+      "definition": "consumer",
+      "configuration": {}
+    }
+  ],
+  "connections": [
+    {
+      "source": {
+        "instance": "component",
+        "port": "game-clock"
+      },
+      "target": {
+        "instance": "consumer",
+        "port": "game-clock"
+      }
+    }
+  ]
+}

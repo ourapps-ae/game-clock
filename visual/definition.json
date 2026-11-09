@@ -1,0 +1,36 @@
+{
+  "id": "ourapps-ae.game-clock",
+  "name": "Game clock",
+  "kind": "component",
+  "status": "example",
+  "package": "ourapps-ae/game-clock",
+  "version": "0.3.0",
+  "ports": [
+    {
+      "id": "game-clock",
+      "name": "Game clock",
+      "direction": "output",
+      "kind": "interface",
+      "type": "ae/game-clock",
+      "version": "1.0.0"
+    }
+  ],
+  "settings": [
+    {
+      "id": "decisionSeconds",
+      "name": "Decisionseconds",
+      "type": "number",
+      "required": false,
+      "secret": false,
+      "default": 30
+    },
+    {
+      "id": "onTimeout",
+      "name": "Ontimeout",
+      "type": "string",
+      "required": false,
+      "secret": false,
+      "default": "check-or-fold"
+    }
+  ]
+}

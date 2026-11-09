@@ -1,0 +1,31 @@
+{
+  "id": "game-clock",
+  "type": "ae/game-clock",
+  "version": "1.0.0",
+  "notes": "The caller says which clocks run (create, advance, reset, elapsed, wallAt); pauses and holds are owned by presence and are not stored here. Timers (startDecision, startThinking, renewIfPresent, delay, after, isDue, remainingMs, settleLeftMs, timeoutAction, nextWake) read the action clock. Wall times are epoch milliseconds.",
+  "operations": {
+    "create": {"arguments": ["now:number"], "returns": "ClockState (both clocks at zero)"},
+    "advance": {"arguments": ["clock:ClockState", "now:number", "runs:{action:boolean,level:boolean}"], "returns": "ClockState (each clock that runs gains now minus the last update; one that does not run stands still; never goes backwards)"},
+    "reset": {"arguments": ["clock:ClockState", "now:number"], "returns": "ClockState (both clocks to zero)"},
+    "elapsed": {"arguments": ["clock:ClockState", "which:'action'|'level'"], "returns": "number (running milliseconds; RangeError for another name)"},
+    "wallAt": {"arguments": ["clock:ClockState", "which:'action'|'level'", "targetMs:number"], "returns": "number (epoch ms at which that clock reaches targetMs if it keeps running from the last update; never before the last update)"},
+    "validateSettings": {"arguments": ["settings?:{decisionSeconds:integer,onTimeout:'check-or-fold'|'fold'|'none'}"], "returns": "ClockSettings"},
+    "after": {"arguments": ["state:ClockState", "ms:number"], "returns": "number (action-clock deadline)"},
+    "startDecision": {"arguments": ["state:ClockState", "settings:ClockSettings", "options:{settleMs:number,absent?:boolean}"], "returns": "Timer {settleUntil,deadline}"},
+    "startThinking": {"arguments": ["state:ClockState", "options:{settleMs:number,minMs:number,thinkMs:number}"], "returns": "Timer"},
+    "renewIfPresent": {"arguments": ["timer:Timer", "settings:ClockSettings", "present:boolean"], "returns": "Timer"},
+    "delay": {"arguments": ["timer:Timer", "ms:number"], "returns": "Timer"},
+    "isDue": {"arguments": ["state:ClockState", "deadline:number|null"], "returns": "boolean"},
+    "remainingMs": {"arguments": ["state:ClockState", "deadline:number|null"], "returns": "number|null"},
+    "settleLeftMs": {"arguments": ["state:ClockState", "timer:Timer"], "returns": "number"},
+    "timeoutAction": {"arguments": ["settings:ClockSettings", "canCheck:boolean"], "returns": "'check'|'fold'|'none'"},
+    "nextWake": {"arguments": ["state:ClockState", "deadlines:(number|null)[]", "extraWakes?:number[]"], "returns": "number|null (wall time at which the earliest deadline falls due if the action clock keeps running; null when nothing waits)"},
+    "remaining": {"arguments": ["leftAtView:number|null", "viewAt:number", "now:number", "frozen:boolean"], "returns": "number|null (web, apple, android)"},
+    "endsAt": {"arguments": ["leftAtView:number|null", "viewAt:number", "frozen:boolean"], "returns": "number|null (web)"},
+    "formatClock": {"arguments": ["ms:number"], "returns": "string 'm:ss' (web, apple, android)"}
+  },
+  "types": {
+    "ClockState": "{clockAt:number,actionMs:number,levelMs:number}",
+    "Timer": "{settleUntil:number,deadline:number} in action-clock milliseconds"
+  }
+}

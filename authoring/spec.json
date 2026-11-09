@@ -1,0 +1,127 @@
+{
+  "name": "game-clock",
+  "version": "0.3.0",
+  "title": "Game clock",
+  "description": "Decision timers and level timers as pure functions over an injected now(): two clocks the caller runs or stops, deadlines on them, timeout actions, and client countdowns for web, Apple and Android.",
+  "facilities": [
+    {
+      "id": "game-clock",
+      "description": "Caller-driven clocks, decision and thinking deadlines, timeouts, next wake-up, client countdowns"
+    }
+  ],
+  "provides": [
+    {
+      "id": "game-clock",
+      "type": "ae/game-clock",
+      "version": "1.0.0",
+      "path": "interfaces/game-clock.json"
+    }
+  ],
+  "requires": [],
+  "collect": [
+    {
+      "id": "decisionSeconds",
+      "type": "integer",
+      "grammar": "integer",
+      "required": false,
+      "secret": false,
+      "default": 30
+    },
+    {
+      "id": "onTimeout",
+      "type": "string",
+      "grammar": "slug",
+      "required": false,
+      "secret": false,
+      "default": "check-or-fold"
+    }
+  ],
+  "dependencies": [],
+  "platforms": [
+    "server",
+    "web",
+    "apple",
+    "android"
+  ],
+  "tools": {
+    "node": "26.5.0",
+    "python3": "3.12.8",
+    "swiftc": "6.4.2",
+    "kotlinc": "2.2.0",
+    "java": "26.0.1"
+  },
+  "suites": [
+    {
+      "id": "web",
+      "argv": [
+        "node",
+        "--test",
+        "tests/web.test.ts"
+      ]
+    },
+    {
+      "id": "apple",
+      "argv": [
+        "python3",
+        "tests/native.py",
+        "apple"
+      ],
+      "scope": "platform",
+      "tools": {
+        "python3": "3.12.8",
+        "swiftc": "6.4.2"
+      },
+      "fixtures": [
+        "tests/apple/main.swift",
+        "tests/fixtures/countdown.json"
+      ]
+    },
+    {
+      "id": "android",
+      "argv": [
+        "python3",
+        "tests/native.py",
+        "android"
+      ],
+      "scope": "platform",
+      "tools": {
+        "python3": "3.12.8",
+        "kotlinc": "2.2.0",
+        "java": "26.0.1"
+      },
+      "fixtures": [
+        "tests/android/Main.kt",
+        "tests/fixtures/countdown.json"
+      ]
+    }
+  ],
+  "text": {
+    "purpose": "A turn-based game with clocks needs them to be fair and testable. This component keeps two clocks as plain values: the action clock (decisions, board runouts, result holds, offers) and the level clock (stake levels). Both advance only by the time between injected `now` readings, and only while the caller says they run: the caller stops them while the game is paused (host away, everyone offline, manual) or while a player holds the clock to look at cards or read a guide. A deadline is a reading of the action clock, so stopping the clock stops every countdown. The component builds decision timers (a settle to take in what happened, then the decision time; absent players get the settle only; computer players get a minimum plus a thinking time the caller draws from a random source), says what to do when time runs out, and works out the next wall time the game must wake up. Client files turn the countdown the server sends into a running display that stands still while frozen.",
+    "userInputs": "The installer collects two settings. `decisionSeconds` is how long a player has to decide (whole number of seconds; default 30, as in the house rules). `onTimeout` is what the game does when time runs out: `check-or-fold` (check if free, otherwise fold; default), `fold`, or `none` (keep waiting).",
+    "integration": "The turn engine keeps one `ClockState` (`create(now)`) and, at the start of every request and wake-up, calls `advance(clock, now, runs)`. Presence owns who is paused or holding the clock; the engine reads that and says which clocks run: `runs.action` is false while the table is paused or held, `runs.level` is also false while rebuy offers are open. `reset(clock, now)` starts a game, `elapsed(clock, 'action'|'level')` reads a clock (feed the level reading to `level-schedule`) and `wallAt(clock, which, targetMs)` gives the epoch time a clock reaches a target if it keeps running, for scheduling alarms. When a player becomes the actor the engine stores `startDecision(...)` (or `startThinking(...)` for a computer player, with a thinking time drawn from the random source) and when `isDue` it takes `timeoutAction`. Clients call `remaining(leftAtView, viewAt, now, frozen)` and `formatClock`. Presence timing itself (who is connected) is not here.",
+    "infrastructure": "No deployed service and no accounts. The host provides a wall clock and an alarm facility; the component only does arithmetic on the readings it is given.",
+    "verification": "`tests/web.test.ts` (required-local) checks settings, clock arithmetic with a clock that goes backwards, the separate level run flag, decision, absent and thinking timers, renewal when an absent player returns, timeout actions, next wake-up, `create`, `advance`, `reset`, `elapsed`, `wallAt` and the client countdown rows in `tests/fixtures/countdown.json`. `tests/native.py apple` compiles `Countdown.swift` with swiftc and checks the same rows (run and passed on this machine). `tests/native.py android` does the same with kotlinc; kotlinc is not installed here, so it was written but not run.",
+    "scenarios": "A hold'em table with 30 seconds per decision, stopped when the host disconnects. A turbo game with 10 seconds and fold on timeout. A relaxed game with `onTimeout` `none`.",
+    "updates": "Patch updates replace the files only. The component keeps no data; the clock state lives in the game state the engine stores. Changing `decisionSeconds` affects timers started afterwards, not those already running."
+  },
+  "agentInstructions": "Select this component for any game with decision time limits or level timers. Set `decisionSeconds` from the recipe's decision time answer (hold'em: 30), and `onTimeout` from the house rules (hold'em: check-or-fold). Connect the provided `game-clock` to the turn engine and to computer-players. Include the web, Apple and Android files only when those client targets are selected.",
+  "developerInstructions": "Never read the system clock inside game code; pass `now` in. Store the `ClockState` and timers with the game so a restart resumes where it stopped. Send clients the milliseconds left (`remainingMs`) and whether the game is frozen, and use `remaining` on the client. No accounts or keys. With a turn engine, pause and hold state belongs to presence: pass run flags to `advance`.",
+  "suitability": {
+    "format": 1,
+    "jobs": [
+      "game-clock"
+    ],
+    "profiles": [
+      {
+        "id": "any",
+        "load": {},
+        "cost": "none",
+        "regions": [
+          "any"
+        ],
+        "compliance": []
+      }
+    ],
+    "notes": "Pure library; no provider limits apply. The host's alarm facility (for example a durable object alarm) is chosen by the server-host job, not here."
+  }
+}
