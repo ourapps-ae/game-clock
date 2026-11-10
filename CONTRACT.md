@@ -20,10 +20,10 @@ The installer collects two settings. `decisionSeconds` is how long a player has 
 - `implementation/web/countdown.ts` -> `components/game-clock/web/countdown.ts`
 
 Dependencies: none.
-`tools.lock.json` pins verification tools: node 26.5.0, python3 3.12.8, swiftc 6.4.2, kotlinc 2.2.0, java 26.0.1. Licence wording remains deferred.
+`tools.lock.json` pins verification tools: node 26.5.0, python3 3.12.8, swiftc 6.4.2, kotlinc 2.2.0, java 26.0.1. Licence: `Apache-2.0` (`LICENCE`, `NOTICE`).
 
 ## Provided interfaces
-- `interfaces/game-clock.json` defines `game-clock` (ae/game-clock) version 1.0.0.
+- `interfaces/game-clock.json` defines `game-clock` (ae/game-clock) version 1.0.0: an OpenRPC 1.3.2 document, one method per function (a member of a created object is `<Type>.<member>`), with parameter, result and data types as JSON Schema 2020-12 (`components.schemas`) and thrown errors under `errors`.
 
 ## Required interfaces
 None.

@@ -1,6 +1,6 @@
 {
   "name": "game-clock",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "title": "Game clock",
   "description": "Decision timers and level timers as pure functions over an injected now(): two clocks the caller runs or stops, deadlines on them, timeout actions, and client countdowns for web, Apple and Android.",
   "facilities": [
