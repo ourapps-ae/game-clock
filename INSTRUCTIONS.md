@@ -3,7 +3,7 @@
 ## For the agent
 Select this component for any game with decision time limits or level timers. Set `decisionSeconds` from the recipe's decision time answer (hold'em: 30), and `onTimeout` from the house rules (hold'em: check-or-fold). Connect the provided `game-clock` to the turn engine and to computer-players. Include the web, Apple and Android files only when those client targets are selected.
 
-- Select package `ourapps-ae/game-clock` version `0.4.0`.
+- Select package `ourapps-ae/game-clock` version `0.4.1`.
 - Settings to configure:
   - `decisionSeconds` (integer; optional; default `30`)
   - `onTimeout` (string, slug; optional; default `check-or-fold`)
