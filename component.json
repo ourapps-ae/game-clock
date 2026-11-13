@@ -19,9 +19,21 @@
       "template": false
     },
     {
+      "destination": "components/game-clock/server/index.ts",
+      "executable": false,
+      "source": "implementation/server/index.ts",
+      "template": false
+    },
+    {
       "destination": "components/game-clock/web/countdown.ts",
       "executable": false,
       "source": "implementation/web/countdown.ts",
+      "template": false
+    },
+    {
+      "destination": "components/game-clock/web/index.ts",
+      "executable": false,
+      "source": "implementation/web/index.ts",
       "template": false
     }
   ],
@@ -32,7 +44,9 @@
       "components/game-clock/android/src/main/java/ae/clock/Countdown.kt",
       "components/game-clock/apple/Sources/Countdown.swift",
       "components/game-clock/server/clock.ts",
-      "components/game-clock/web/countdown.ts"
+      "components/game-clock/server/index.ts",
+      "components/game-clock/web/countdown.ts",
+      "components/game-clock/web/index.ts"
     ]
   },
   "collect": [
@@ -110,7 +124,15 @@
     },
     {
       "executable": false,
+      "path": "implementation/server/index.ts"
+    },
+    {
+      "executable": false,
       "path": "implementation/web/countdown.ts"
+    },
+    {
+      "executable": false,
+      "path": "implementation/web/index.ts"
     },
     {
       "executable": false,
